@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crap Chat</title>
+</head>
+<body>
+    <div id="not-signed">
+        <h2>Crap chat</h2>
+        <div id="sign-in">
+            <h2>Sign In</h2>
+            <input type="text" id="username" placeholder="Username"><br>
+            <input type="password" id="password" placeholder="Password"><br>
+            <button id="sign-in-btn">Sign in</button>
+        </div>
+        <div id="sign-up">
+            <h2>Sign Up</h2>
+            <input type="text" id="username2" placeholder="Username"><br>
+            <input type="password" id="password2" placeholder="Password"><br>
+            <button id="sign-up-btn">Sign up</button>
+        </div>
+    </div>
+    <div id="signed">
+        <h2>Crap Chat</h2>
+        <h2>Freinds:</h2>
+        <ul id="freinds">
+            
+        </ul>
+        <button id="add-freind">
+            Add freind
+        </button>
+    </div>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=JetBrains+Mono:wght@200;300;400&family=Merriweather:wght@300&family=Montserrat:wght@800&family=Nabla&family=Noto+Sans+JP:wght@100&family=Open+Sans:wght@500;800&family=Raleway:wght@200&family=Seymour+One&family=Sigmar+One&family=Unbounded&display=swap');
+        body {
+            background-color: rgb(14, 13, 13);
+            color: white;
+            font-family: 'Unbounded', cursive;
+
+        }
+        #not-signed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin-left: 25%;
+            width: 50%;
+        }
+        input {
+            border: none;
+            border-bottom: 1px solid white;
+            background-color: transparent;
+            color: white;
+            font-family: 'Unbounded', cursive;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+        button {
+            border: .5px solid white;
+            background-color: transparent;
+            color: white;
+            font-family: 'Unbounded', cursive;
+            font-size: 1rem;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+        }
+     
+    </style>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import {getDatabase, ref, set, onValue, get} from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+        // storage
+        import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyC6DVdS9bbbtTUuxQII9LmBCIBiV5xkubk",
+          authDomain: "crapchat-445e4.firebaseapp.com",
+          projectId: "crapchat-445e4",
+          storageBucket: "crapchat-445e4.appspot.com",
+          messagingSenderId: "106135688642",
+          appId: "1:106135688642:web:ddb287da567cff0769325b"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+        const dbref = ref(db);
+        const storageRef = sref(storage);
+        const notSigned = document.getElementById("not-signed");
+        const signed = document.getElementById("signed");
+        const signIn = document.getElementById("sign-in");
+        const signUp = document.getElementById("sign-up");
+        const signInBtn = document.getElementById("sign-in-btn");
+        const signUpBtn = document.getElementById("sign-up-btn");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const username2 = document.getElementById("username2");
+        const password2 = document.getElementById("password2");
+        const freinds = document.getElementById("freinds");
+        const addFreind = document.getElementById("add-freind");
+        const userToken = window.localStorage.getItem("userToken");
+        if(userToken) {
+            notSigned.style.display = "none";
+            signed.style.display = "flex";
+            onValue(ref(db, `users/${userToken}/freinds/`), (snapshot) => {
+                const data = snapshot.val();
+                freinds.innerHTML = "";
+                for (const key in data) {
+                    const element = data[key];
+                    freinds.innerHTML += `<div class="freind">
+                        <h1>${element.username}</h1>
+                        <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./take-snap.html'">Take snap</button>
+                        <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./view-snap.html'">View snaps</button>
+                    </div>`;
+                }
+            });
+        } else {
+            notSigned.style.display = "flex";
+            signed.style.display = "none";
+        }
+
+
+        
+        signInBtn.addEventListener("click", () => {
+            const user = username.value;
+            const pass = password.value;
+            get(ref(db, `users/${user}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    if(snapshot.val().password == pass) {
+                        window.localStorage.setItem("userToken", snapshot.val().username);
+                        window.location.reload();
+                    } else {
+                        alert("Wrong password");
+                    }
+                } else {
+                    alert("User does not exist");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        });
+        signUpBtn.addEventListener("click", () => {
+            const user = username2.value;
+            const pass = password2.value;
+            const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            get(ref(db, `users/${user}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    alert("User already exists");
+                } else {
+                    set(ref(db, `users/${user}`), {
+                        username: user,
+                        password: pass,
+                        token: token
+                    });
+                    window.localStorage.setItem("userToken", user);
+                    window.location.reload();
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        });
+        if(localStorage.getItem("userToken") == undefined) {
+            notSigned.style.display = "block";
+            signed.style.display = "none";
+        } else {
+            notSigned.style.display = "none";
+            signed.style.display = "block";
+        }
+        // add freind
+        addFreind.addEventListener("click", () => {
+            const freind = prompt("Enter freind username");
+            get(ref(db, `users/${freind}`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    set(ref(db, `users/${freind}/freinds/${localStorage.getItem("userToken")}`), {
+                        username: localStorage.getItem("userToken")
+                    });
+                    set(ref(db, `users/${localStorage.getItem("userToken")}/freinds/${freind}`), {
+                        username: freind
+                    });
+                } else {
+                    alert("User does not exist");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        });
+       // get snaps from users freinds
+       
+      </script>
+</body>
+</html>
