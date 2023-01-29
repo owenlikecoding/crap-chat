@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crap Chat</title>
 </head>
+
 <body>
     <div id="not-signed">
         <h2>Crap chat</h2>
@@ -24,22 +26,31 @@
     </div>
     <div id="signed">
         <h2>Crap Chat</h2>
+        <p id="signed-in-as"></p>
         <h2>Freinds:</h2>
         <ul id="freinds">
-            
+
         </ul>
         <button id="add-freind">
             Add freind
         </button>
+        <div id="notifactions">
+            <h2>Notifactions</h2>
+            <ul id="notifactions-list">
+
+            </ul>
+        </div>
     </div>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=JetBrains+Mono:wght@200;300;400&family=Merriweather:wght@300&family=Montserrat:wght@800&family=Nabla&family=Noto+Sans+JP:wght@100&family=Open+Sans:wght@500;800&family=Raleway:wght@200&family=Seymour+One&family=Sigmar+One&family=Unbounded&display=swap');
+
         body {
             background-color: rgb(14, 13, 13);
             color: white;
             font-family: 'Unbounded', cursive;
 
         }
+
         #not-signed {
             display: flex;
             flex-direction: column;
@@ -49,6 +60,7 @@
             margin-left: 25%;
             width: 50%;
         }
+
         input {
             border: none;
             border-bottom: 1px solid white;
@@ -59,6 +71,7 @@
             padding: 0.5rem;
             margin: 0.5rem;
         }
+
         button {
             border: .5px solid white;
             background-color: transparent;
@@ -68,32 +81,34 @@
             padding: 0.5rem;
             margin: 0.5rem;
         }
+
         ul {
             list-style: none;
             margin: 0;
         }
-     
     </style>
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-        import {getDatabase, ref, set, onValue, get} from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
         // storage
         import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
 
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
-      
+
         // Your web app's Firebase configuration
         const firebaseConfig = {
-          apiKey: "AIzaSyC6DVdS9bbbtTUuxQII9LmBCIBiV5xkubk",
-          authDomain: "crapchat-445e4.firebaseapp.com",
-          projectId: "crapchat-445e4",
-          storageBucket: "crapchat-445e4.appspot.com",
-          messagingSenderId: "106135688642",
-          appId: "1:106135688642:web:ddb287da567cff0769325b"
+            apiKey: "AIzaSyC6DVdS9bbbtTUuxQII9LmBCIBiV5xkubk",
+            authDomain: "crapchat-445e4.firebaseapp.com",
+            projectId: "crapchat-445e4",
+            storageBucket: "crapchat-445e4.appspot.com",
+            messagingSenderId: "106135688642",
+            appId: "1:106135688642:web:ddb287da567cff0769325b"
         };
-      
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
@@ -113,7 +128,7 @@
         const freinds = document.getElementById("freinds");
         const addFreind = document.getElementById("add-freind");
         const userToken = window.localStorage.getItem("userToken");
-        if(userToken) {
+        if (userToken) {
             notSigned.style.display = "none";
             signed.style.display = "flex";
             onValue(ref(db, `users/${userToken}/freinds/`), (snapshot) => {
@@ -125,6 +140,7 @@
                         <h1>${element.username}</h1>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./take-snap.html'">Take snap</button>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./view-snap.html'">View snaps</button>
+                        <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.localStorage.setItem('fm', '1');" class="mesUser">Message user</button>
                     </div>`;
                 }
             });
@@ -134,14 +150,15 @@
         }
 
 
-        
+
+
         signInBtn.addEventListener("click", () => {
             const user = username.value;
             const pass = password.value;
             get(ref(db, `users/${user}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     console.log(snapshot.val());
-                    if(snapshot.val().password == pass) {
+                    if (snapshot.val().password == pass) {
                         window.localStorage.setItem("userToken", snapshot.val().username);
                         window.location.reload();
                     } else {
@@ -174,7 +191,7 @@
                 console.error(error);
             });
         });
-        if(localStorage.getItem("userToken") == undefined) {
+        if (localStorage.getItem("userToken") == undefined) {
             notSigned.style.display = "block";
             signed.style.display = "none";
         } else {
@@ -199,8 +216,51 @@
                 console.error(error);
             });
         });
-       // get snaps from users freinds
-       
-      </script>
+        // get snaps from users freinds
+        var notifactionslist = document.getElementById("notifactions-list");
+        get(ref(db, "users/" + localStorage.getItem("userToken") + "/notifactions")).then((snapshot) => {
+            const data = snapshot.val();
+            for (const key in data) {
+                const element = data[key];
+                if (element.type == "snap") {
+                    notifactionslist.innerHTML += `
+                <div class="notifaction">
+                    <h3>${element.from} sent you a snap</h3>
+                    <img src="${element.image}" alt="">
+                    <button onclick="window.localStorage.setItem('currentSnaper', '${element.from}'); window.location.href ='./view-snap.html'">Open snap</button>
+                </div>`;
+                }
+                else {
+                    notifactionslist.innerHTML += `<div class="notifaction">
+                    <h3>${element.content}</h3>
+                    <button onclick="window.localStorage.setItem('currentSnaper', '${element.from}'); window.localStorage.setItem('fm', 0); window.location.href='./regular-chat.html'">Open message</button>
+                </div>`;
+                }
+            }
+        });
+        // listen for the even lisnter on mesUser
+        document.addEventListener("click", (e) => {
+            if (e.target.classList.contains("mesUser")) {
+                get(ref(db, "number/")).then((snapshot) => {
+                    var number = snapshot.val().num;
+                    update(ref(db, "number/"), {
+                        num: number - 1
+                    });
+                    set(ref(db, "users/" + window.localStorage.getItem("currentSnaper") + "/notifactions/" + snapshot.val().num), {
+                        from: localStorage.getItem("userToken"),
+                        type: "message",
+                        content: window.localStorage.getItem("userToken") + " has sent you a message"
+                    });
+                });
+                setTimeout(() => {
+                    window.location.href = "./regular-chat.html";
+                }, 100);
+            }
+        });
+        var signedinas = document.getElementById("signed-in-as");
+        signedinas.innerHTML = "signed in as: " + localStorage.getItem("userToken");
+
+    </script>
 </body>
+
 </html>
