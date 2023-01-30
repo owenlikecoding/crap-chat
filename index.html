@@ -27,6 +27,8 @@
     <div id="signed">
         <h2>Crap Chat</h2>
         <p id="signed-in-as"></p>
+        <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./previous-snaps.html'">Veiw snaps you sent</button>
+        <button id="sign-out">Sign out</button>
         <h2>Freinds:</h2>
         <ul id="freinds">
 
@@ -92,9 +94,9 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, get, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, get, update, remove} from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
         // storage
-        import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
+        import { getStorage, ref as sref, uploadBytesResumable, getDownloadURL,  } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-storage.js";
 
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
@@ -141,6 +143,9 @@
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./take-snap.html'">Take snap</button>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./view-snap.html'">View snaps</button>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.localStorage.setItem('fm', '1');" class="mesUser">Message user</button>
+                        <button class="deluser">Freind</button>
+
+
                     </div>`;
                 }
             });
@@ -259,7 +264,22 @@
         });
         var signedinas = document.getElementById("signed-in-as");
         signedinas.innerHTML = "signed in as: " + localStorage.getItem("userToken");
-
+        // sign out
+        var signOut = document.getElementById("sign-out");
+        signOut.addEventListener("click", () => {
+            localStorage.removeItem("userToken");
+            window.location.reload();
+        });
+        // delete user
+        document.addEventListener("click", (e) => {
+            if (e.target.classList.contains("deluser")) {
+                const user = e.target.parentElement.children[0].innerHTML;
+                remove(ref(db, "users/" + window.localStorage.getItem("userToken") + "/freinds/" + user));
+                window.setTimeout(() => {
+                    window.location.reload();
+                }, 700);
+            }
+        });
     </script>
 </body>
 

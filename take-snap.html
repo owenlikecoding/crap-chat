@@ -99,6 +99,16 @@
                 update(ref(db, "number"), {
                     num: snapshot.val().num / 1 - 1
                 });
+                set(ref(db, "users/" + window.localStorage.getItem("userToken") + "/snapHistory/" + snapshot.val().num), {
+                    image: window.localStorage.getItem('image'),
+                    time: Date.now(),
+                    sender: window.localStorage.getItem("userToken"),
+                    message: document.getElementById('message').value,
+                    to: window.localStorage.getItem("currentSnaper")
+                });
+                update(ref(db, "number"), {
+                    num: snapshot.val().num / 1 - 1
+                });
 
             }).catch((error) => {
                 console.error(error);
@@ -121,7 +131,7 @@
             });
             window.setTimeout(() => {
                 window.location.href = "./index.html";
-            }, 500);
+            }, 1000);
 
         }
     </script>
