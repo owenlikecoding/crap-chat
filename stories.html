@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add To Story</title>
+</head>
+
+<body>
+    <h1>Add To Story</h1>
+    <button onclick="window.location.href = './index.html'">Back To Home</button>
+    <div id="take-story">
+        <div id="my_camera"></div>
+        <input type=button value="Take Snapshot" onClick="take_snapshot()" id="poop">
+
+        <div id="results"></div>
+        <div id="no">
+            <input type="text" id="message" placeholder="add some context">
+            <button id="sendStory">
+                Add To Story
+            </button>
+        </div>
+
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=JetBrains+Mono:wght@200;300;400&family=Merriweather:wght@300&family=Montserrat:wght@800&family=Nabla&family=Noto+Sans+JP:wght@100&family=Open+Sans:wght@500;800&family=Raleway:wght@200&family=Seymour+One&family=Sigmar+One&family=Unbounded&display=swap');
+
+        body {
+            background-color: rgb(14, 13, 13);
+            color: white;
+            font-family: 'Unbounded', cursive;
+
+        }
+
+        #not-signed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin-left: 25%;
+            width: 50%;
+        }
+
+        input {
+            border: none;
+            border-bottom: 1px solid white;
+            background-color: transparent;
+            color: white;
+            font-family: 'Unbounded', cursive;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+
+        button {
+            border: .5px solid white;
+            background-color: transparent;
+            color: white;
+            font-family: 'Unbounded', cursive;
+            font-size: 1rem;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        /* put notifactions next to freinds */
+    </style>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <script language="JavaScript">
+        // Configure a few settings and attach camera
+        Webcam.set({
+            width: 320,
+            height: 240,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+        var sendStory = document.getElementById('sendStory');
+        sendStory.style.display = "none";
+        // preload shutter audio clip
+        function take_snapshot() {
+            // play sound effect
+            // take snapshot and get image data
+            Webcam.snap(function (data_uri) {
+                // display results in page
+                document.getElementById('results').innerHTML =
+                    '<img src="' + data_uri + '"/>';
+                console.log(data_uri);
+                window.localStorage.setItem('image', data_uri);
+
+            });
+            sendStory.style.display = "block";
+
+            
+            
+        }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, get, push, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6DVdS9bbbtTUuxQII9LmBCIBiV5xkubk",
+            authDomain: "crapchat-445e4.firebaseapp.com",
+            projectId: "crapchat-445e4",
+            storageBucket: "crapchat-445e4.appspot.com",
+            messagingSenderId: "106135688642",
+            appId: "1:106135688642:web:ddb287da567cff0769325b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        // dom elements
+        const sendStory = document.getElementById('sendStory');
+        const message = document.getElementById('message');
+        const stories = document.getElementById('stories');
+        const image = window.localStorage.getItem('image');
+        sendStory.onclick = function () {
+            get(ref(db, "number/")).then(function (snapshot) {
+                set(ref(db, "users/" + window.localStorage.getItem("userToken") + "/storie/" + snapshot.val().num), {
+                    image: image,
+                    message: message.value
+                });
+                update(ref(db, "number/"), {
+                    num: snapshot.val().num - 1
+                });
+                setTimeout(function () {
+                    window.location.href = "./index.html";
+                }, 1000);
+
+            });
+            
+
+        }
+        
+    </script>
+</body>
+
+</html>

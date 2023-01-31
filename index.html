@@ -29,6 +29,8 @@
         <p id="signed-in-as"></p>
         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./previous-snaps.html'">Veiw snaps you sent</button>
         <button id="sign-out">Sign out</button>
+        <button  id="scroll-to-notifactions">Scroll to notifaction</button>
+        <button onclick="window.location.href='./stories.html'">Create A Story</button>
         <h2>Freinds:</h2>
         <ul id="freinds">
 
@@ -88,6 +90,9 @@
             list-style: none;
             margin: 0;
         }
+        /* put notifactions next to freinds */
+
+
     </style>
     <!-- jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -143,7 +148,8 @@
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./take-snap.html'">Take snap</button>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href='./view-snap.html'">View snaps</button>
                         <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.localStorage.setItem('fm', '1');" class="mesUser">Message user</button>
-                        <button class="deluser">Freind</button>
+                        <button onclick="window.localStorage.setItem('currentSnaper', '${element.username}'); window.location.href = './vs.html'">Veiw Story</button>
+                        <button class="deluser">Remove Freind</button>
 
 
                     </div>`;
@@ -280,6 +286,10 @@
                 }, 700);
             }
         });
+        var scrolltonotifactions = document.getElementById("scroll-to-notifactions");
+        scrolltonotifactions.onclick = function() {
+            document.getElementById("notifactions").scrollIntoView();
+        }
     </script>
 </body>
 
