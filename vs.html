@@ -39,7 +39,7 @@
         const currentStory = document.getElementById("currentStory");
         const image = document.getElementById("image");
         const message = document.getElementById("message");
-        get(ref(db, "users/" + window.localStorage.getItem('currentSnaper') + "/stories/" )).then((snapshot) => {
+        get(ref(db, "users/" + window.localStorage.getItem('currentSnaper') + "/storie/" )).then((snapshot) => {
             if (snapshot.exists()) {
                 console.log(snapshot.val());
                 image.src = snapshot.val().image;

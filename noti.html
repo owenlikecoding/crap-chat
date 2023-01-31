@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifactions</title>
+</head>
+<body>
+    <h2>Stay on this page for notifactions</h2>
+    <p>make sure you have notifactions enabled</p>
+    
+    <a href="./index.html">Back To Home</a>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, get, push, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6DVdS9bbbtTUuxQII9LmBCIBiV5xkubk",
+            authDomain: "crapchat-445e4.firebaseapp.com",
+            projectId: "crapchat-445e4",
+            storageBucket: "crapchat-445e4.appspot.com",
+            messagingSenderId: "106135688642",
+            appId: "1:106135688642:web:ddb287da567cff0769325b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbref = ref(db);
+        onValue(ref(db, "users/" + window.localStorage.getItem('userToken') + "/notifactions"), (snapshot) => {
+           
+            // check for permissio
+                new Notification('New Message', {
+                    body: "You have a new message from " + snapshot.val().sender,
+                });
+        
+        });
+    </script>
+</body>
+</html>
