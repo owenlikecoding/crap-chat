@@ -10,9 +10,8 @@
 
 <body>
     <div id="currentStory">
-        <h1>Current Story</h1>
-        <img src="" alt="" id="image">
-        <p id="message"></p>
+        <h1>Story</h1>
+        <ul id="list"></ul>
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
@@ -39,11 +38,16 @@
         const currentStory = document.getElementById("currentStory");
         const image = document.getElementById("image");
         const message = document.getElementById("message");
-        get(ref(db, "users/" + window.localStorage.getItem('currentSnaper') + "/storie/" )).then((snapshot) => {
+        get(ref(db, "users/" + window.localStorage.getItem("currentSnaper") + "/storie")).then((snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
-                image.src = snapshot.val().image;
-                message.innerText = snapshot.val().message;
+                var list = document.getElementById("list");
+                var data = snapshot.val();
+                for (var key in data) {
+                    var li = document.createElement("li");
+                    li.innerHTML = `<img src="${data[key].image}" alt="image"><p>${data[key].message}</p>`;
+                    list.appendChild(li);
+                }
+            
             } else {
                 console.log("No data available");
             }
