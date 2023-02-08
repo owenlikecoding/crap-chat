@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize</title>
+</head>
+<body>
+    <h1>Background Color</h1>
+    <input type="color" id="bcolor"><br>
+    <button id="sub">Submit</button>
+    <!-- text color -->
+    <h1>Text Color</h1>
+    <input type="color" id="tcolor"><br>
+    <button id="sub2">Submit</button>
+    <h1>Button Color</h1>
+    <input type="color" id="bbcolor"><br>
+    <button id="sub3">Submit</button>
+    <h1>Button Text Color</h1>
+    <input type="color" id="btcolor"><br>
+    <button id="sub4">Submit</button>
+
+    <br>
+    <a href="./index.html">Back To Home</a>
+
+    <script>
+        let sub = document.getElementById("sub");
+        let bcolor = document.getElementById("bcolor");
+        sub.addEventListener("click", function() {
+            let color = bcolor.value;
+            localStorage.setItem("color", color);
+            window.location.reload();
+        });
+        let tcolor = document.getElementById("tcolor");
+        let sub2 = document.getElementById("sub2");
+        sub2.addEventListener("click", function() {
+            let color = tcolor.value;
+            localStorage.setItem("tcolor", color);
+            window.location.reload();
+        });
+        let bbcolor = document.getElementById("bbcolor");
+        let sub3 = document.getElementById("sub3");
+        sub3.addEventListener("click", function() {
+            let color = bbcolor.value;
+            localStorage.setItem("bbcolor", color);
+            window.location.reload();
+        });
+        let btcolor = document.getElementById("btcolor");
+        let sub4 = document.getElementById("sub4");
+        sub4.addEventListener("click", function() {
+            let color = btcolor.value;
+            localStorage.setItem("btcolor", color);
+            window.location.reload();
+        });
+
+    </script>
+    <script src="./get.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=JetBrains+Mono:wght@200;300;400&family=Merriweather:wght@300&family=Montserrat:wght@800&family=Nabla&family=Noto+Sans+JP:wght@100&family=Open+Sans:wght@500;800&family=Raleway:wght@200&family=Seymour+One&family=Sigmar+One&family=Unbounded&display=swap');
+
+        body {
+            background-color: rgb(14, 13, 13);
+            color: white;
+            font-family: 'Unbounded', cursive;
+
+        }
+
+        #not-signed {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin-left: 25%;
+            width: 50%;
+        }
+
+      
+
+        button {
+            border: .5px solid white;
+            background-color: transparent;
+            color: white;
+            font-family: 'Unbounded', cursive;
+            font-size: 1rem;
+            padding: 0.5rem;
+            margin: 0.5rem;
+        }
+        a {
+            color: white;
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+            width: 80%;
+            height: 50vh;
+            overflow-y: scroll;
+
+        }
+    </style>                                                                                                                                                                                                    
+</body>
+</html>

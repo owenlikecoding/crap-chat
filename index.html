@@ -32,6 +32,7 @@
         <button  id="scroll-to-notifactions">Scroll to notifaction</button>
         <button onclick="window.location.href='./stories.html'">Create A Story</button>
         <button onclick="window.location.href ='./noti.html'">Set Up Notifactions</button>
+        <button onclick="window.location.href ='./custom.html'" id="cus">Customize</button>
         <h2>Freinds:</h2>
         <ul id="freinds">
 
@@ -50,7 +51,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=JetBrains+Mono:wght@200;300;400&family=Merriweather:wght@300&family=Montserrat:wght@800&family=Nabla&family=Noto+Sans+JP:wght@100&family=Open+Sans:wght@500;800&family=Raleway:wght@200&family=Seymour+One&family=Sigmar+One&family=Unbounded&display=swap');
 
         body {
-            background-color: rgb(14, 13, 13);
+            background-color: #0e0d0d;
             color: white;
             font-family: 'Unbounded', cursive;
 
@@ -292,6 +293,23 @@
             document.getElementById("notifactions").scrollIntoView();
         }
     </script>
+    <style>
+        #cus {
+            animation: border 1s infinite;
+        }
+        @keyframes border {
+            0% {
+                border-color: #000;
+            }
+            50% {
+                border-color: #fff;
+            }
+            100% {
+                border-color: #000;
+            }
+        }
+    </style>
+    <script src="./get.js"></script>
 </body>
 
 </html>
